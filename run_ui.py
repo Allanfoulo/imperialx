@@ -254,6 +254,11 @@ if __name__ == "__main__":
         def log_request(self, code='-', size='-'):
             pass  # Override to suppress request logging
 
-    # run the server on port from .env
-    port = int(os.environ.get("WEB_UI_PORT", 0)) or None
-    app.run(request_handler=NoRequestLoggingWSGIRequestHandler,port=port)
+    # run the server on Render's PORT, fallback to WEB_UI_PORT, then 10000
+    port = int(os.environ.get("PORT", os.environ.get("WEB_UI_PORT", 10000)))
+    
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        request_handler=NoRequestLoggingWSGIRequestHandler
+    )
